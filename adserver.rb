@@ -44,18 +44,53 @@ get '/ad' do
 end
 
 get '/list' do
+  @title = "List Ads"
+  @ads = Ad.all(:order=>[:created_at.desc])
+  erb :list
 end
 
 get '/new' do
+  @title = "Create a new Ad"
+  erb :new
 end
 
 post '/create' do
+  @ad = Ad.new(params[:ad])
+  
+  @ad.title = params[:ad][:title] || 'noop'
+  
+  @ad.content_type = params[:image][:type]
+  @ad.size = File.size(params[:image][:tempfile])
+  if @ad.save
+    path = File.join(Dir.pwd, "public/ads", @ad.filename)
+    File.open(path, "wb") do |f|
+      f.write(params[:image][:tempfile].read)
+    end
+    redirect "/show/#{@ad.id}"
+  else
+    redirect("/list")
+  end
 end
 
 get '/delete/:id' do
+  ad = Ad.get(params[:id])
+  unless ad.nil?
+    path = File.join(Dir.pwd, "/public/ads", ad.filename)
+    if File.exist?(path)
+      File.delete(path)  
+    end
+    ad.destroy
+  end
+  redirect('/list')
 end
 
 get '/show/:id' do
+  @ad = Ad.get(params[:id])
+  if @ad
+    erb :show
+  else
+    redirect('/list')
+  end
 end
 
 get '/click/:id' do
