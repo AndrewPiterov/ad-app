@@ -36,6 +36,7 @@ end
 
 
 get '/' do
+  @title = "Welcome to the PeepCode AdServer"
   erb :welcome
 end
 
