@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= @title %></title>
+    <link rel="stylesheet" href="/css/styles.css" ></link>
+  </head>
+  <body>
+    <%= yield %>
+    
+    <div id="debug">
+      <p>The time is <%= Time.now.strftime("%I:%M:%S %p") %></p>
+      <p>Sinatra version <%= Sinatra::VERSION %></p>
+    </div>
+    
+  </body>
+</html>
